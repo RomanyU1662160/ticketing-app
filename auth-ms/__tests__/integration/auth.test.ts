@@ -6,40 +6,55 @@ import server from '../../server';
 import { setTestEnv, restoreEnv } from '../test-utils';
 import mongoose from 'mongoose';
 
-import { Password } from '../../src/services/PassowrdHashing.service';
-
-
+let mockUser = {
+  fname: "John",
+  lname: "Doe",
+  email: "example@example.com",
+  password: "Rafie208*"
+}
 
 describe('AuthMs', () => {
   beforeAll(() => {
     setTestEnv()
-    console.log(" DB_USE_LOCAL_MONGO", process.env.DB_USE_LOCAL_MONGO)
-    
   })
 
   afterEach(async () => {
-
     server.close()
-  await mongoose.connection.dropCollection('users')
   })
 
-
-  afterAll(() => {
-   // restoreEnv()
+  afterAll(async () => {
+    // restoreEnv()
+    await mongoose.connection.dropCollection('users')
     mongoose.connection.close()
   })
+
   describe("sign up endpoint", () => {
     it("should be able to signup", async () => {
-      const payload = {
-        fname: "John",
-        lname: "Doe",
-        email: "examle@example.com",
-        password: "Rafie208*",
-      }
-      const resp = await request(server).post("/signup/submit").send(payload).expect(200);
-      payload.password =  await Password.hash(payload.password)
-      expect(resp.body).toHaveProperty('fname', payload.fname)
-      expect(resp.body).toEqual( expect.objectContaining({...payload, password:expect.any(String)  })) 
+      const resp = await request(server).post("/signup/submit").send(mockUser).expect(200);
+      expect(resp.body).toHaveProperty('fname', mockUser.fname)
+      expect(resp.body).toEqual(expect.objectContaining({ ...mockUser, password: expect.any(String) }))
     })
+
+
+    it("Should set the token in the session-cookie header", async () => {
+      mockUser = { ...mockUser, email: "example2@example.com" }
+      console.log("mockUser::>>>", mockUser)
+      const resp = await request(server).post("/signup/submit").send(mockUser).expect(200);
+      console.log("res. error::>>>", resp.error)
+      expect(resp.headers).toHaveProperty('set-cookie')
+    }
+    )
+    it("should return 400 if user is already exist", async () => {
+      await request(server).post("/signup/submit").send(mockUser);
+      await request(server).post("/signup/submit").send(mockUser).expect(400);
+    })
+
+    it("should through an error if body validation failed ", async () => {
+      mockUser = { ...mockUser, email: "notValidEmail" }
+      const res = await request(server).post("/signup/submit").send(mockUser).expect(505);
+      const expectedError = { errors: { email: ['Please add valid email...'] } }
+      expect(res.body).toEqual(expect.objectContaining(expectedError))
+    })
+
   })
 })

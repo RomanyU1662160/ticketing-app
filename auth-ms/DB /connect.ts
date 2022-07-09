@@ -19,7 +19,7 @@ return dbUrl;
 
 const connectDb = async () => {
 const dbUrl = generateDbUrl();
-console.log("dbUrl:::>>>", dbUrl)
+
   try {
     await mongoose.connect(dbUrl, {
       useNewUrlParser: true,

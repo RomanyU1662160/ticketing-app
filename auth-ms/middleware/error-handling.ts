@@ -16,6 +16,7 @@ const errorHandler = (err: any, req: Request, res: Response, next: NextFunction)
     console.log('err.message  :::>>>', err.message)
 
     res.status(err.statusCode || 500).send(err.seralizeErrors ? err.seralizeErrors() : err.message)
+    next()
 
 }
 

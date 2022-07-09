@@ -74,22 +74,25 @@ router.post("/signup/submit", async (req: Request, res: Response, next: NextFunc
     const { fname, lname, email, password } = _.pick(req.body, ["fname", "lname", "password", "email"]);
 
     //validate body using validate.js
-    try {
+  
         const validationOptions = {
             email: 'required|email',
             password: 'required',
             fname: 'required',
             lname: 'required'
         }
+        console.log("email:::>>>>", email)
         const CutomErrorMessages = { email: "Please add valid email..." }
         let validation = new Validator({ fname, lname, email, password }, validationOptions, CutomErrorMessages)
         if (validation.fails()) {
-            throw new ValidationError(validation.errors)
+    console.log("validaition fialed")  
+     throw  new ValidationError(validation.errors)
+
         }
         const foundedUser = await User.findOne({ email });
 
         if (foundedUser) {
-            return res.send("User already exist").status(400)
+            return res.status(400).send("User already exist!!!")
         }
 
         // password hashed in userSchema with the mongoose pre hook 
@@ -116,9 +119,7 @@ router.post("/signup/submit", async (req: Request, res: Response, next: NextFunc
         // returned newUser not include password and 
         res.send(newUser.toObject())
 
-    } catch (error) {
-        res.send(error)
-    }
+    
 
 })
 

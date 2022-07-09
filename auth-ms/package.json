@@ -6,7 +6,8 @@
   "scripts": {
     "build": "tsc",
     "tsc": "tsc",
-    "test":"jest --config jest.config.ts --no-cache --verbose --runInBand --watchAll", 
+    "test:pre": "docker-compose -f docker-compose-test.yaml up -d",
+    "test": " npm run test:pre  && jest --config jest.config.ts --no-cache --verbose --runInBand --watchAll",
     "start": "node dist/server.js",
     "dev": " nodemon server.ts"
   },
