@@ -39,7 +39,7 @@ describe('AuthMs', () => {
       const resp = await request(server).post("/signup/submit").send(payload).expect(200);
       payload.password =  await Password.hash(payload.password)
       expect(resp.body).toHaveProperty('fname', payload.fname)
-      expect(resp.body).toMatchObject(payload)
+      expect(resp.body).toEqual( expect.objectContaining({...payload, password:expect.any(String)  })) 
     })
   })
 })

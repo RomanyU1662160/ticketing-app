@@ -59,6 +59,7 @@ UserSchema.methods.generateToken = function (expiry: number = 360000): string {
 //middleware to hashpassword before save
 UserSchema.pre("save", async function (next) {
     if (this.isModified("password")) {
+        console.log("password :::>>>", this.get("password"))
         const hashed = await Password.hash(this.get("password"));
         this.set("password", hashed)
     }
