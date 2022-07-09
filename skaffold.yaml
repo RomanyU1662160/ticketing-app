@@ -1,0 +1,37 @@
+# https://skaffold.dev/docs/workflows/getting-started-with-your-project/
+# https://skaffold.dev/docs/references/yaml/
+
+apiVersion: skaffold/v2beta8
+kind: Config
+profiles:
+  - name: tickets-app
+
+deploy:
+# Using kubectl as our deployer
+  kubectl:
+    manifests:    # Location to our yaml files
+      - ./k8s/dev/*.yaml
+build:
+  local:
+    push: false  # donot push to docker.hub
+  artifacts:      # the images you're going to be building
+                  # name of the image to be built
+    - image:    romanysefen/auth-ms
+      context:  auth-ms       #directory containing the artifact's sources.
+      docker:
+        dockerfile: Dockerfile
+    #   local files synced to pods instead of triggering an image build when modified. 
+    #   If no files are listed, sync all the files and infer the destination.
+      sync:
+        # manual sync rules indicating the source and destination.
+        manual:   
+            - src:   'src/**/*.tsx'      # skaffold will watch any change in files matchs the pattern and copy itto k8 pod rather than update the image.
+              dest:  .       #destination path in the container where the files should be synced to
+            - src:   'src/**/**/*.tsx'      # skaffold will watch any change in files matchs the pattern and copy itto k8 pod rather than update the image.
+              dest:  .       #destination path in the container where the files should be synced to
+            - src:   'server.ts'      # skaffold will watch any change in files matchs the pattern and copy itto k8 pod rather than update the image.
+              dest:  .       #destination path in the container where the files should be synced to
+            - src:   'routes/*.ts'     
+              dest:  .    
+            - src: 'interfaces/*.ts'
+              dest:   .

@@ -1,0 +1,9 @@
+# https://kubernetes.io/docs/concepts/configuration/configmap/
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: mongo-configmap
+ 
+data:
+  DB_URL: mongodb+srv://romany:rafie208@cluster0.mc0cc.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+  DB_SERVER: auth-mongo-svc
