@@ -20,7 +20,6 @@ router.get("/login", auth, (req: Request, res: Response) => {
         res.send("welcome to login page.")
 
     } catch (error: any) {
-        console.log('error.message !!!:::>>>', error.message)
         res.send(error.message)
     }
 
@@ -74,57 +73,56 @@ router.post("/signup/submit", async (req: Request, res: Response, next: NextFunc
     const { fname, lname, email, password } = _.pick(req.body, ["fname", "lname", "password", "email"]);
 
     //validate body using validate.js
-  
-        const validationOptions = {
-            email: 'required|email',
-            password: 'required',
-            fname: 'required',
-            lname: 'required'
-        }
-        console.log("email:::>>>>", email)
-        const CutomErrorMessages = { email: "Please add valid email..." }
-        let validation = new Validator({ fname, lname, email, password }, validationOptions, CutomErrorMessages)
-        if (validation.fails()) {
-    console.log("validaition fialed")  
-     throw  new ValidationError(validation.errors)
 
-        }
-        const foundedUser = await User.findOne({ email });
+    const validationOptions = {
+        email: 'required|email',
+        password: 'required',
+        fname: 'required',
+        lname: 'required'
+    }
+    const CutomErrorMessages = { email: "Please add valid email..." }
+    let validation = new Validator({ fname, lname, email, password }, validationOptions, CutomErrorMessages)
+    if (validation.fails()) {
+        console.log("validaition fialed")
+        throw new ValidationError(validation.errors)
 
-        if (foundedUser) {
-            return res.status(400).send("User already exist!!!")
-        }
+    }
+    const foundedUser = await User.findOne({ email });
 
-        // password hashed in userSchema with the mongoose pre hook 
-        const newUser = User.build({ fname, lname, email, password })
+    if (foundedUser) {
+        return res.status(400).send("User already exist!!!")
+    }
 
-        //check password complexity
-        const passwordComplexityValidation = checkPassComplexity(password);
-        if (passwordComplexityValidation.error) {
-            return res.status(400).send(passwordComplexityValidation.error)
-        }
+    // password hashed in userSchema with the mongoose pre hook 
+    const newUser = User.build({ fname, lname, email, password })
+
+    //check password complexity
+    const passwordComplexityValidation = checkPassComplexity(password);
+    if (passwordComplexityValidation.error) {
+        return res.status(400).send(passwordComplexityValidation.error)
+    }
 
 
-        await newUser.save();
+    await newUser.save();
 
-        // Generat token for the new user 
-        const token = newUser?.generateToken(360000)
+    // Generat token for the new user 
+    const token = newUser?.generateToken(360000)
 
-        // set the token in req.session {jwt: token}
-        // set the token in the res.header { x-auth-token: token} 
-        if (token) {
-            req.session!.jwt = token      // set the token in the session-cookie header
-            res.header("x_auth_token", token)    // set the x-auth-token in the header
-        }
-        // returned newUser not include password and 
-        res.send(newUser.toObject())
+    // set the token in req.session {jwt: token}
+    // set the token in the res.header { x-auth-token: token} 
+    if (token) {
+        req.session!.jwt = token      // set the token in the session-cookie header
+        res.header("x_auth_token", token)    // set the x-auth-token in the header
+    }
+    // returned newUser not include password and 
+    res.send(newUser.toObject())
 
-    
+
 
 })
 
 router.post("/signout", (req: Request, res: Response) => {
-    console.log('signout called ');
+    console.log('signout called');
     req.session = null;
     res.send("you have signed out.")
 })

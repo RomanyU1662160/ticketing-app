@@ -12,8 +12,8 @@ import ConfigSingelton from './src/services/configService';
 
 
 config();
-connectDb();
 
+console.log("process.env.NODE_ENV)::>>>", process.env.NODE_ENV)
 const app = express();
 app.use(urlencoded({ extended: false }));
 // app.set('trust proxy', true) // express servere will trust ingress-nginix proxy fro m the k8s
@@ -25,13 +25,15 @@ app.use(cookieSession({    // middleware from cookie-session library to set sess
   signed: false   // not encrypt passed jwt token 
 }))
 
-
+//start proxy 
 startupProxy(app);
 // const port = ConfigSingelton.getInstance().getKey("PORT")
+console.log("process.env.PORT", process.env.PORT)
 const port = process.env.PORT || 5001;
 
 //const port2 = process.env.PORT
-const server = app.listen(port, () => {
+const server = app.listen(port, async () => {
+  await connectDb();
   console.log(`${process.env.APP_NAME} application is running on port ${port}`);
 })
 

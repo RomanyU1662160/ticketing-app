@@ -18,6 +18,7 @@ declare global {
 }
 
 const currentUserMiddleware = (req: Request, res: Response, next: NextFunction) => {
+    // session set by the cookie-session package 
     const sessionJwt = req.session?.jwt;
     if (!sessionJwt) {
         req.currentUser = null

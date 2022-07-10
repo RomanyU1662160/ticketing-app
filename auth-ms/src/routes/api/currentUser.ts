@@ -10,7 +10,7 @@ const router = express.Router();
 router.get("/users/current-user", currentUser, authMiddleware, (req, res) => {
     //  The currentUser middleware check the session token and set currentuser from the jwt payload
     const currentUser = req.currentUser
-
+    console.log('currentUser :::>>>', currentUser)
     res.send({ currentUser })
 })
 
