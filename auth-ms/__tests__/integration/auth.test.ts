@@ -66,7 +66,7 @@ describe('Auth', () => {
 
       it("should through an error if password is not complex enough", async () => {
         const payload = { ...mockUser, email: "example3@example.com", password: "123" }
-        const res = await request(server).post("/signup/submit").send(payload);
+        const res = await request(server).post("/signup/submit").send(payload).expect(400);
       })
 
       it("should throw an error if email/password is not in the body", () => {
