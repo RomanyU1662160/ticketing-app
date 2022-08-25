@@ -1,25 +1,23 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import "bootstrap/dist/css/bootstrap.min.css";
+import { Container } from "react-bootstrap";
+import { Route, Routes } from "react-router-dom";
+// import './App.css';
+import LoginForm from "./components/auth/LoginForm";
+import SignUpForm from "./components/auth/SignUpForm";
+import NavBar from "./components/main/Navbar";
+
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <NavBar></NavBar>
+      <Container fluid className="bg-light mb-2 ml-2 mr-2" style={{ minHeight: "99vh" }}>
+        <Routes>
+          <Route path="/signup" element={<SignUpForm />} >  </Route>
+          <Route path="/login" element={<LoginForm />} >  </Route>
+        </Routes>
+      </Container>
+    </div >
   );
 }
 
