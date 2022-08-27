@@ -90,7 +90,7 @@ router.post("/signup/submit", async (req: Request, res: Response, next: NextFunc
     const foundedUser = await User.findOne({ email });
 
     if (foundedUser) {
-        return res.status(400).send("User already exist!!!")
+        return res.status(400).json("User already exist!!!")
     }
 
     // password hashed in userSchema with the mongoose pre hook 

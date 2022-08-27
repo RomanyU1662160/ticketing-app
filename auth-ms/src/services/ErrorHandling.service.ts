@@ -22,7 +22,7 @@ export abstract class ErrorHandling extends Error {
 }
 
 export class ValidationError extends ErrorHandling {
-    public statusCode: number = 505
+    public statusCode: number = 400
     constructor(public errors: ValidationErrors | Validator.Errors) {
         super(errors)
         Object.setPrototypeOf(this, ValidationError.prototype)
