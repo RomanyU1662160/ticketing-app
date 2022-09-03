@@ -1,4 +1,5 @@
 import { Errors, ValidationErrors, Validator } from "validatorjs"
+import Joi, { ValidationResult } from 'joi';
 
 /**
  * Error handling Abstract class extends Error and has abstract proprties seralizeErrors and statuCode
@@ -14,7 +15,7 @@ export abstract class ErrorHandling extends Error {
     abstract statusCode: number;
     abstract seralizeErrors(): ValidationErrors | Validator.Errors;
 
-    constructor(public errors?: ValidationErrors | Validator.Errors) {
+    constructor(public errors?: ValidationErrors | Validator.Errors | Joi.ValidationResult) {
         super()
         // because we are extending a built in class 'Error'
         Object.setPrototypeOf(this, ValidationError.prototype)
@@ -30,6 +31,22 @@ export class ValidationError extends ErrorHandling {
     seralizeErrors = () => {
         return this.errors
     }
+}
+
+export class PasswordComplexityError extends ErrorHandling {
+    public statusCode: number = 400
+
+    constructor(public errors: Joi.ValidationResult) {
+        super(errors)
+    }
+    seralizeErrors = () => {
+        const seralizedErors = this.errors.error?.details.reduce((acc: any, curr: any) => {
+            return { ...acc, [curr.type]: [curr.message] }
+        }, 0)
+
+        return ({ errors: seralizedErors })
+    }
+
 }
 
 export class DbConnectionError extends ErrorHandling {
