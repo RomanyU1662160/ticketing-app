@@ -6,7 +6,7 @@ import { NextFunction, Request, Response } from "express";
  
  */
 
-const errorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
+const errorHandlerMiddleware = (err: any, req: Request, res: Response, next: NextFunction) => {
 
     res.locals.message = err.message
     // set errors to local when we in dev only
@@ -21,7 +21,7 @@ const errorHandler = (err: any, req: Request, res: Response, next: NextFunction)
 }
 
 
-export default errorHandler;
+export default errorHandlerMiddleware;
 /*
 note:  no need to call  next() in the above middleware 
 require('express-async-errors'); in server.js  will catch async errors without adding next in the middleware

@@ -5,17 +5,18 @@ import User, { IUser } from "../../models/User";
 import express from 'express';
 
 import Validator, { ValidationErrors } from 'validatorjs';
-import { ValidationError } from "../../services/ErrorHandling.service";
+
 import checkPassComplexity from "../../helpers/passwordComplexity";
 import _ from "lodash";
-import { Password } from "../../services/PassowrdHashing.service";
+
 import validateLogin from "../../validations/loginValidator";
-import auth from "../../../middleware/currentUser";
+import { currentUserMiddlewar, authMiddleware, Password, ValidationError } from "@rooma/common-ms";
+
+
 
 const router = express.Router();
 
-
-router.get("/login", auth, (req: Request, res: Response) => {
+router.get("/login", authMiddleware, (req: Request, res: Response) => {
     try {
         res.send("welcome to login page.")
 

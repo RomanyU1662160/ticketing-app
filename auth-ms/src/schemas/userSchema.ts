@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
-import { Password } from "../services/PassowrdHashing.service";
 import jwt from 'jsonwebtoken';
-import { MissingEnvVariableError } from "../services/ErrorHandling.service";
+import { MissingEnvVariableError, Password } from "@rooma/common-ms";
 
 
 const UserSchema = new mongoose.Schema({

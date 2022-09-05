@@ -51,9 +51,9 @@ const SignUpForm = (): ReactElement => {
 
 
                 <div className="d-grid gap-2 mt-3">
-                    {simpleValidator.current.allValid() ?
-                        <Button type='submit' variant='info' className='float-right ' size='lg'  > Signup </Button> :
-                        <span className='text-info text-center'>    Fill all fields to signup</span>}
+
+                    <Button type='submit' variant='info' className='float-right ' size='lg'  > Signup </Button> :
+
                 </div>
             </Form>
         </div>

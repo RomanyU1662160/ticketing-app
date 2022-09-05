@@ -7,8 +7,7 @@ import connectDb from './DB /connect';
 import { urlencoded } from 'body-parser';
 import startupProxy from './startup/startup';
 import cookieSession from 'cookie-session'
-import authMiddleware from './middleware/currentUser';
-import ConfigSingelton from './src/services/configService';
+
 
 
 config();

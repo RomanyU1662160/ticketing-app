@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 import { config } from 'dotenv';
-import { DbConnectionError } from '../src/services/ErrorHandling.service';
+import { DbConnectionError } from '@rooma/common-ms';
 
 config()
 

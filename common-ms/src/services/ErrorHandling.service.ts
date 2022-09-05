@@ -10,7 +10,7 @@ import Joi, { ValidationResult } from 'joi';
 
 
 
-export abstract class ErrorHandling extends Error {
+export abstract class ErrorHandlingService extends Error {
 
     abstract statusCode: number;
     abstract seralizeErrors(): ValidationErrors | Validator.Errors;
@@ -22,7 +22,7 @@ export abstract class ErrorHandling extends Error {
     }
 }
 
-export class ValidationError extends ErrorHandling {
+export class ValidationError extends ErrorHandlingService {
     public statusCode: number = 400
     constructor(public errors: ValidationErrors | Validator.Errors) {
         super(errors)
@@ -33,7 +33,7 @@ export class ValidationError extends ErrorHandling {
     }
 }
 
-export class PasswordComplexityError extends ErrorHandling {
+export class PasswordComplexityError extends ErrorHandlingService {
     public statusCode: number = 400
 
     constructor(public errors: Joi.ValidationResult) {
@@ -49,7 +49,7 @@ export class PasswordComplexityError extends ErrorHandling {
 
 }
 
-export class DbConnectionError extends ErrorHandling {
+export class DbConnectionError extends ErrorHandlingService {
     public statusCode = 500
     constructor(public message: string) {
         super()
@@ -61,7 +61,7 @@ export class DbConnectionError extends ErrorHandling {
     }
 }
 
-export class AuthenticationError extends ErrorHandling {
+export class AuthenticationError extends ErrorHandlingService {
     public statusCode = 401
     constructor(public message: string) {
         super()
@@ -75,7 +75,7 @@ export class AuthenticationError extends ErrorHandling {
 
 }
 
-export class MissingEnvVariableError extends ErrorHandling {
+export class MissingEnvVariableError extends ErrorHandlingService {
     public statusCode: number = 505;
     public errors: any;
     constructor(public message: string) {
