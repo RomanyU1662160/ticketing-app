@@ -41,7 +41,7 @@ export class PasswordComplexityError extends ErrorHandlingService {
     }
     seralizeErrors = () => {
         const seralizedErors = this.errors.error?.details.reduce((acc: any, curr: any) => {
-            return { ...acc, [curr.type]: [curr.message] }
+            return { ...acc, password: curr.message }
         }, 0)
 
         return ({ errors: seralizedErors })

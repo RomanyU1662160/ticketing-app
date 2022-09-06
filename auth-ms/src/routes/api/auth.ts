@@ -10,7 +10,8 @@ import checkPassComplexity from "../../helpers/passwordComplexity";
 import _ from "lodash";
 
 import validateLogin from "../../validations/loginValidator";
-import { currentUserMiddlewar, authMiddleware, Password, ValidationError } from "@rooma/common-ms";
+import { authMiddleware, Password, PasswordComplexityError, ValidationError } from "@rooma/common-ms";
+import { AuthenticationError } from '../../../../common-ms/src/services/ErrorHandling.service';
 
 
 
@@ -86,22 +87,31 @@ router.post("/signup/submit", async (req: Request, res: Response, next: NextFunc
     if (validation.fails()) {
         console.log("validaition fialed")
         throw new ValidationError(validation.errors)
-
     }
+
+    interface PasswordComplexityErrors {
+        [key: string]: Array<string>
+    }
+
+
+
+    //check password complexity
+    const passwordComplexityValidation = checkPassComplexity(password);
+    if (passwordComplexityValidation.error) {
+        throw new PasswordComplexityError(passwordComplexityValidation)
+    }
+
+
     const foundedUser = await User.findOne({ email });
 
     if (foundedUser) {
-        return res.status(400).json("User already exist!!!")
+        throw new ValidationError({ "errors": ["Use already exist!!!"] })
     }
 
     // password hashed in userSchema with the mongoose pre hook 
     const newUser = User.build({ fname, lname, email, password })
 
-    //check password complexity
-    const passwordComplexityValidation = checkPassComplexity(password);
-    if (passwordComplexityValidation.error) {
-        return res.status(400).send(passwordComplexityValidation.error)
-    }
+
 
 
     await newUser.save();

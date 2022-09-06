@@ -13,6 +13,8 @@ const SignUpForm = (): ReactElement => {
 
     const { formValues, handleChange, handleSubmit, errors } = useForm([], {})
 
+    console.log("ERRORS IN FORTM:>>>", errors)
+
     const signUpUrl: string = `${process.env.REACT_APP_AUTH_URL}/signup/submit`;
     return (<>
         <div className="col-md-8 offset-md-2">
@@ -47,13 +49,16 @@ const SignUpForm = (): ReactElement => {
                     <span className="text-danger"> {simpleValidator.current.message('password', formValues.password, 'required|min:6')} </span>
 
                 </Form.Group>
-                {errors.length > 0 ? errors.map(err => <p className='bg-danger'> {err} </p>) : null}
+
+
+                {errors?.email ? <p className='text-danger'> {errors?.email}</p> : ""}
+                {errors?.password ? <p className='text-danger'> {errors?.password}</p> : ""}
+                {errors?.fname ? <p className='text-danger'> {errors?.fname}</p> : ""}
+                {errors?.lname ? <p className='text-danger'> {errors?.lname}</p> : ""}
 
 
                 <div className="d-grid gap-2 mt-3">
-
                     <Button type='submit' variant='info' className='float-right ' size='lg'  > Signup </Button> :
-
                 </div>
             </Form>
         </div>

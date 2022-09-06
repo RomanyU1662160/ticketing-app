@@ -4,7 +4,7 @@ import { ChangeEvent, FormEvent, useCallback, useState } from "react";
 
 export const useForm = (initialValues: any, validationSchema: any) => {
     const [formValues, setFormValues] = useState(initialValues);
-    const [errors, setErrors] = useState<string[]>([]);
+    const [errors, setErrors] = useState<any>();
     const [touched, setTouched] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -21,6 +21,7 @@ export const useForm = (initialValues: any, validationSchema: any) => {
             e.preventDefault();
             setIsSubmitting(true);
             setErrors([])
+
             const res = await fetch(url, {
                 method: 'POST',
                 headers: {
@@ -30,18 +31,15 @@ export const useForm = (initialValues: any, validationSchema: any) => {
             })
 
             const data = await res.json();
+
             console.log("data:::>>>", data)
-            if (res.status === 401) {
-                setErrors([...errors, data.authError[0]]);
-            }
-            if (res.status === 505) {
-                console.log("data.details:::>>>", data.details)
-                setErrors([...errors, data.details]);
+            if (data.errors) {
+                setErrors(data.errors)
             }
             setIsSubmitting(false);
 
         },
-        [formValues, errors]
+        [formValues]
     );
 
     return ({
