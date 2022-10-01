@@ -30,7 +30,7 @@ const currentUserMiddleware = (req: Request, res: Response, next: NextFunction) 
         // solution  override the Request type in Express as above
         req.currentUser = payload
     } catch (error: any) {
-        console.log('error.message :::>>>', error.message)
+        console.log('error.message in currentUserMiddleware :::>>>', error.message)
 
     }
 
