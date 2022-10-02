@@ -10,6 +10,7 @@ export const useForm = (initialValues: any, validationSchema: any) => {
 
     const handleChange = useCallback(
         (e: ChangeEvent<HTMLInputElement>) => {
+
             setFormValues({ ...formValues, [e.target.name]: e.target.value });
             setTouched({ ...touched, [e.target.name]: true });
         },
@@ -21,23 +22,26 @@ export const useForm = (initialValues: any, validationSchema: any) => {
             e.preventDefault();
             setIsSubmitting(true);
             setErrors([])
+            try {
+                const res = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formValues),
+                })
 
-            const res = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formValues),
-            })
+                const data = await res.json();
+                console.log('data ::::>>>', data)
 
-            const data = await res.json();
-
-            console.log("data:::>>>", data)
-            if (data.errors) {
-                setErrors(data.errors)
+                if (data.errors) {
+                    setErrors(data.errors)
+                }
+                setIsSubmitting(false);
+                return res
+            } catch (error) {
+                console.log('error ::::>>>', error)
             }
-            setIsSubmitting(false);
-
         },
         [formValues]
     );
@@ -73,6 +77,7 @@ export const useFormWithLocalStorage = (initialValues: any, validationSchema: an
 
     const handleSubmit = useCallback(
         async (e: FormEvent<HTMLFormElement>, url: string) => {
+
             e.preventDefault();
             setIsSubmitting(true);
             setErrors([])
@@ -85,13 +90,20 @@ export const useFormWithLocalStorage = (initialValues: any, validationSchema: an
             })
 
             const data = await res.json();
-            console.log("data:::>>>", data)
+            console.log('data ::::>>>', data)
             if (res.status === 401) {
                 setErrors([...errors, data.authError[0]]);
+
             }
             if (res.status === 505) {
                 console.log("data.details:::>>>", data.details)
                 setErrors([...errors, data.details]);
+
+            }
+            if (res.status === 500) {
+                console.log("data.details:::>>>", data.details)
+                setErrors([...errors, data.details]);
+
             }
             setIsSubmitting(false);
 

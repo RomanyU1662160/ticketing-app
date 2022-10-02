@@ -4,7 +4,6 @@ import { currentUserMiddlewar, authMiddleware } from "@rooma/common-ms";
 
 const router = express.Router();
 
-console.log('currentUserMiddlewar ::::>>>', currentUserMiddlewar)
 
 router.get("/users/current-user", currentUserMiddlewar, authMiddleware, (req, res) => {
     //  The currentUser middleware check the session token and set currentuser from the jwt payload

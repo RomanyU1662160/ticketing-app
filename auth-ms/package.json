@@ -16,7 +16,7 @@
   "license": "ISC",
   "dependencies": {
     "@hapi/joi": "^17.1.1",
-    "@rooma/common-ms": "^1.0.10",
+    "@rooma/common-ms": "^1.0.12",
     "@types/bcrypt": "^5.0.0",
     "@types/bcryptjs": "^2.4.2",
     "@types/body-parser": "^1.19.1",

@@ -5,7 +5,7 @@ import request from 'supertest';
 import server from '../../server';
 import { setTestEnv, restoreEnv } from '../test-utils';
 import mongoose from 'mongoose';
-import connectDb from '../../DB /connect';
+import connectDb from '../../src/DB /connect';
 import { signupMockUser } from '../test-utils';
 
 let mockUser = {

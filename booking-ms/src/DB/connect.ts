@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 import { config } from 'dotenv';
-import { DbConnectionError } from '@rooma/common-ms';
+
 
 
 config()
@@ -12,7 +12,7 @@ const generateDbUrl = (): string => {
         console.log("It is test environment in Connect DB )::>>>", process.env.NODE_ENV)
         dbUrl = `${process.env.DB_LOCAL_BASE_URL}${process.env.DB_LOCAL_USERNAME}:${process.env.DB_LOCAL_PASSWORD}@${process.env.DB_LOCAL_SERVER}:${process.env.DB_LOCAL_PORT}`
     } else {
-        console.log("It is NOT test environment in Connect DB )::>>>")
+        console.log(`It is ${process.env.NODE_ENV} environment in Connect DB )::>>>`)
         dbUrl = `${process.env.DB_BASE_URL}${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_SERVER}`
     }
 

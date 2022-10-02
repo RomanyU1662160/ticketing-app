@@ -1,25 +1,33 @@
-import { ReactElement, useRef, useState } from 'react';
+import { FormEvent, ReactElement, useRef, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 // import UseFormSimple from '../../hooks/custom/useFormSimple';
 import { useForm } from '../../hooks/custom/useForm';
 import SimpleReactValidator from 'simple-react-validator';
-
-
+import { useAuthContext } from '../../contexts/AuthContext';
 
 
 const SignUpForm = (): ReactElement => {
     const simpleValidator = useRef(new SimpleReactValidator());
 
     const { formValues, handleChange, handleSubmit, errors } = useForm([], {})
+    const { setIsLogged, setAuthError, isLogged } = useAuthContext();
 
-    console.log("ERRORS IN FORTM:>>>", errors)
+    const handleSignup = async (e: FormEvent<HTMLFormElement>, url: string) => {
+        try {
+            await handleSubmit(e, url)
+
+        } catch (error) {
+            console.log(error)
+            setIsLogged(false)
+        }
+    }
 
     const signUpUrl: string = `${process.env.REACT_APP_AUTH_URL}/signup/submit`;
     return (<>
-        <div className="col-md-8 offset-md-2">
-            <h3 className="text-center text-info"> Sign up </h3>
-            <Form onSubmit={(e) => handleSubmit(e, signUpUrl)}>
+        {!isLogged ? <div className="col-md-8 offset-md-2">
+            <h3 className="text-center text-info"> Sign up  </h3>
+            <Form onSubmit={(e): any => handleSignup(e, signUpUrl)}>
                 <Form.Group className='m3' controlId='fname' >
                     <Form.Label>First Name: <span className="text-info"> {formValues.fname}</span> </Form.Label>
                     <Form.Control type='text' placeholder='First Name' name='fname' onChange={handleChange}
@@ -61,7 +69,7 @@ const SignUpForm = (): ReactElement => {
                     <Button type='submit' variant='info' className='float-right ' size='lg'  > Signup </Button> :
                 </div>
             </Form>
-        </div>
+        </div> : <p className='text-info'>  You are logged in  </p>}
 
     </>)
 

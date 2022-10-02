@@ -1,7 +1,7 @@
 import request from 'supertest';
 import server from '../../server';
 import mongoose from 'mongoose';
-import connectDb from '../../DB /connect';
+import connectDb from '../../src/DB /connect';
 import { signinMockUser, signupMockUser } from '../test-utils';
 
 describe("currentUser- acceptace tests", () => {

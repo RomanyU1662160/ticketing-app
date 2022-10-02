@@ -5,7 +5,6 @@ import { DbConnectionError } from '@rooma/common-ms';
 config()
 
 
-
 const generateDbUrl = (): string => {
   let dbUrl: string;
   console.log("process.env.NODE_ENV in Connect DB )::>>>", process.env.NODE_ENV)
@@ -16,7 +15,6 @@ const generateDbUrl = (): string => {
     console.log("It is NOT test environment in Connect DB )::>>>")
     dbUrl = `${process.env.DB_BASE_URL}${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_SERVER}`
   }
-  console.log("dbUrl::>>>", dbUrl)
   return dbUrl;
 }
 
@@ -30,7 +28,7 @@ const connectDb = async () => {
       useUnifiedTopology: true,
 
     });
-    console.log("mongoose connected");
+    console.log(`Mongoose connected- ${process.env.APP_NAME}`);
   } catch (error: any) {
     console.log(error.message);
     throw new DbConnectionError(error.message)

@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: booking-depl
+spec:
+  selector:
+    matchLabels:
+      app: booking-ms
+  template:
+    metadata:
+      labels:
+        app: booking-ms
+    spec:
+      containers:
+        - name: booking-ms
+          image: romanysefen/booking-ms
+          ports:
+            - containerPort: 8080
+          env:
+            - name: APP_NAME
+              value: "Tickets-ms"
+            - name: DB_BASE_URL
+              value: mongodb+srv://"
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  key: DB_USERNAME_BOOKING_MS
+                  name: mongo-secret
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: DB_PASSWORD_BOOKING_MS
+                  name: mongo-secret
+            - name: DB_BASE_URL
+              valueFrom:
+                configMapKeyRef:
+                  key: DB_BASE_URL_BOOKING_MS
+                  name: mongo-configmap
+            - name: DB_SERVER
+              valueFrom:
+                configMapKeyRef:
+                  key: DB_SERVER_BOOKING_MS
+                  name: mongo-configmap
+            - name: DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  key: DB_PORT_BOOKING_MS
+                  name: mongo-configmap
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: booking-ms-svc
+spec:
+  selector:
+    app: booking-ms
+  ports:
+    - port: 5002
+      targetPort: 5002
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: booking-ms-svc-nodeport
+spec:
+  type: NodePort
+  selector:
+    app: booking-ms
+  ports:
+    - port: 5002 # port of the node service which we connect to
+      targetPort: 5002 # port of the pod that the node service will connect to

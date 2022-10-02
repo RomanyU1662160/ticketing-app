@@ -3,7 +3,7 @@ import express from 'express';
 import { config } from 'dotenv';
 
 import cors from 'cors';
-import connectDb from './DB /connect';
+import connectDb from './src/DB /connect';
 import { urlencoded } from 'body-parser';
 import startupProxy from './startup/startup';
 import cookieSession from 'cookie-session'

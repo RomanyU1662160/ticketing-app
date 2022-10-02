@@ -1,17 +1,16 @@
 import { NextFunction, Request, Response } from "express";
 
-import User, { IUser } from "../../models/User";
+import User from "../../models/User";
 
 import express from 'express';
 
-import Validator, { ValidationErrors } from 'validatorjs';
+import Validator from 'validatorjs';
 
 import checkPassComplexity from "../../helpers/passwordComplexity";
 import _ from "lodash";
 
 import validateLogin from "../../validations/loginValidator";
-import { authMiddleware, Password, PasswordComplexityError, ValidationError } from "@rooma/common-ms";
-import { AuthenticationError } from '../../../../common-ms/src/services/ErrorHandling.service';
+import { authMiddleware, Password, PasswordComplexityError, AuthenticationError, ValidationError } from "@rooma/common-ms";
 
 
 
@@ -30,38 +29,37 @@ router.get("/login", authMiddleware, (req: Request, res: Response) => {
 
 
 router.post("/login/submit", async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        // 1- vlaidate email and password is in the body 
-        const validation = validateLogin(req.body)
-        if (validation.fails()) {
-            return res.status(500).send(validation.errors)
-        }
+    console.log('req.body ::::>>>', req.body)
 
-        const { email, password } = req.body;
-        // 2- check if user with this email is exist
-
-        const foundedUser = await User.findOne({ email });
-        if (!foundedUser) res.status(404).send(`User with email ${email} is not found  `)
-
-        // 3- check if password is matched with foundedUser
-        const matched = await Password.compare(foundedUser?.password!, password);
-        if (!matched) res.status(500).send("password is not match with our data.")
-
-        // 4- generate token if user is founded (payload inlcude foundeduser)
-
-        const token = foundedUser?.generateToken(360000)
-
-        // 5- set the token in req.session {jwt: token}
-        // set the token in the res.header { x-auth-token: token} 
-        if (token) {
-            req.session!.jwt = token      // set the token in the session-cookie header
-            res.header("x_auth_token", token)    // set the x-auth-token in the header
-        }
-
-        res.send("Welcome " + foundedUser?.fname + " you are logged in.")
-    } catch (error: any) {
-        console.log('error.message :::>>>', error.message)
+    // 1- validate email and password is in the body 
+    const validation = validateLogin(req.body)
+    if (validation.fails()) {
+        return res.status(500).send(validation.errors)
     }
+
+    const { email, password } = req.body;
+    // 2- check if user with this email is exist
+
+    const foundedUser = await User.findOne({ email });
+    if (!foundedUser) throw new AuthenticationError(` user with email ${email} cannot be  not found`)
+
+    // 3- check if password is matched with foundedUser
+    const matched = await Password.compare(foundedUser?.password!, password);
+    if (!matched) throw new AuthenticationError("password not match our records")
+
+    // 4- generate token if user is founded (payload include foundedUser)
+
+    const token = foundedUser?.generateToken(360000)
+
+    // 5- set the token in req.session {jwt: token}
+    // set the token in the res.header { x-auth-token: token} 
+    if (token) {
+        req.session!.jwt = token      // set the token in the session-cookie header
+        res.header("x_auth_token", token)    // set the x-auth-token in the header
+    }
+
+    res.json("Welcome " + foundedUser?.fname + " you are logged in.")
+
 })
 
 router.get("/signup", (req: Request, res: Response) => {
@@ -82,10 +80,10 @@ router.post("/signup/submit", async (req: Request, res: Response, next: NextFunc
         fname: 'required',
         lname: 'required'
     }
-    const CutomErrorMessages = { email: "Please add valid email..." }
-    let validation = new Validator({ fname, lname, email, password }, validationOptions, CutomErrorMessages)
+    const CustomErrorMessages = { email: "Please add valid email..." }
+    let validation = new Validator({ fname, lname, email, password }, validationOptions, CustomErrorMessages)
     if (validation.fails()) {
-        console.log("validaition fialed")
+        console.log("validation failed")
         throw new ValidationError(validation.errors)
     }
 
