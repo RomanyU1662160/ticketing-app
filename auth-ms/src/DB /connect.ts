@@ -28,7 +28,7 @@ const connectDb = async () => {
       useUnifiedTopology: true,
 
     });
-    console.log(`Mongoose connected- ${process.env.APP_NAME}`);
+    console.log(`Mongoose connected::: ${process.env.APP_NAME}`);
   } catch (error: any) {
     console.log(error.message);
     throw new DbConnectionError(error.message)
